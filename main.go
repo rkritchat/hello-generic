@@ -21,10 +21,43 @@ func main() {
 	y := IsIn([]string{"A", "B", "C"}, target, predicate)
 	fmt.Println(y)
 
+	//with specific type
+	k := IsInWithTypeSet[int]([]int{2, 4, 56, 7}, 2)
+	fmt.Println(k) //true
+
+	//without specific type
+	k = IsInWithTypeSet([]float64{1, 2, 3, 4}, 2)
+	fmt.Println(k) //true
+
+	//with additional type
+	type testFloat float64
+	var tf testFloat = 2
+	k = IsInWithTypeSet([]testFloat{2, 3, 4}, tf)
+	fmt.Println(k) //true, and it is allowed to execute because typeSet contain ~ in float64
+
+	//with additional type
+	//type testInt int
+	//var ti testInt = 2
+	//k = IsInWithTypeSet([]testInt{1, 2, 3}, ti)
+	//this will be error because we would add ~ in the int variable, then it allowed only type int
+
 	b := bird{}
 	Run(b)
 	d := dog{}
 	Run(d)
+}
+
+type typeSet interface {
+	int | ~float64
+}
+
+func IsInWithTypeSet[T typeSet](a []T, b T) bool {
+	for _, item := range a {
+		if item == b {
+			return true
+		}
+	}
+	return false
 }
 
 func Filter[T any](collection []T, predicate func(T) bool) []T {
